@@ -7,13 +7,15 @@ public class WebUrl {
     private String hashCode;
     private String url;
     private String type;
+    private int depth;
 
     public WebUrl(){
 
     }
-    public WebUrl(String url, String type){
+    public WebUrl(String url, String type, int depth){
         this.url = url;
         this.type = type;
+        this.depth = depth;
         this.hashCode = String.valueOf(Hashing.md5().hashString(type,Charsets.UTF_8));
     }
 

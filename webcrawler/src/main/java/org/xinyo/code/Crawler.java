@@ -1,6 +1,8 @@
 package org.xinyo.code;
 
 import org.xinyo.common.Config;
+import org.xinyo.common.Data;
+import org.xinyo.entity.WebUrl;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -30,8 +32,11 @@ public class Crawler {
     }
 
     public void doCrawler(){
+        WebUrl url = Data.getUrl();
+        if (url != null) {
 
 
+        }
 
 
     }
