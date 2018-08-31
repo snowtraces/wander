@@ -14,24 +14,29 @@ public class Data {
      * @param url
      * @param type
      */
-    public static synchronized void  addUrl(String url, String type) {
-        WebUrl webUrl = new WebUrl(url, type);
+    public static synchronized boolean addUrl(String url, String type, int depth) {
+        WebUrl webUrl = new WebUrl(url, type, depth);
         String hash = webUrl.getHashCode();
 
         boolean isnew = newSet.add(hash);
         if(isnew){
             fullUrlMap.put(hash, webUrl);
             newUrlList.add(webUrl);
+            return true;
         }
+        return false;
     }
 
     public static synchronized WebUrl getUrl(){
+        System.out.println("---get--");
+        if(newUrlList.size() == 0){
+            return null;
+        }
         WebUrl webUrl = newUrlList.remove(0);
         if (webUrl != null) {
             newSet.remove(webUrl.getHashCode());
             return webUrl;
         }
-
         return null;
     }
 

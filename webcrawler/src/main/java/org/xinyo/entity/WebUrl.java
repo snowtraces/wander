@@ -9,6 +9,14 @@ public class WebUrl {
     private String type;
     private int depth;
 
+    public int getDepth() {
+        return depth;
+    }
+
+    public void setDepth(int depth) {
+        this.depth = depth;
+    }
+
     public WebUrl(){
 
     }
