@@ -1,5 +1,6 @@
 package org.xinyo.common;
 
+import com.google.common.base.Charsets;
 import com.google.common.io.ByteStreams;
 import com.google.common.io.CharStreams;
 import com.google.common.io.Files;
@@ -10,9 +11,13 @@ import org.jsoup.select.Elements;
 import org.xinyo.entity.WebUrl;
 
 import java.io.*;
+import java.nio.charset.Charset;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import static org.xinyo.common.Constant.URL_TYPE_IMG;
 import static org.xinyo.common.Constant.URL_TYPE_TEXT;
+import static sun.plugin.cache.FileVersion.regEx;
 
 public class FileUtils {
 
@@ -39,7 +44,7 @@ public class FileUtils {
             } else {
                 // save
                 String html = CharStreams.toString(new InputStreamReader(inputStream));
-                Files.write(html.getBytes(), file);
+                Files.write(html, file, Charsets.UTF_8);
 
                 // parse
                 parseHtml(webUrl, html);
@@ -75,6 +80,9 @@ public class FileUtils {
                 }
             } else {
                 fileName = split[i];
+                if(validateFileName(fileName)){
+                    fileName = webUrl.getHashCode();
+                }
             }
         }
 
@@ -161,16 +169,25 @@ public class FileUtils {
         return href;
     }
 
+    private static boolean validateFileName(String fileName){
+        String regex = "[?*/\\<>:\"|]";
+        Pattern p = Pattern.compile(regex);
+        Matcher m = p.matcher(fileName);
+        return m.find();
+    }
 
     public static void main(String[] args) throws IOException {
-        WebUrl webUrl = new WebUrl();
-//        webUrl.setType(URL_TYPE_IMG);
-        webUrl.setUrl("https://xinyo.org");
-//        InputStream inputStream = request(webUrl);
-//        save(inputStream, webUrl);
-
-        String s = normalizeUrl(webUrl, "/archives/");
-        System.err.println(s);
+//        WebUrl webUrl = new WebUrl();
+////        webUrl.setType(URL_TYPE_IMG);
+//        webUrl.setUrl("https://xinyo.org");
+////        InputStream inputStream = request(webUrl);
+////        save(inputStream, webUrl);
+//
+//        String s = normalizeUrl(webUrl, "/archives/");
+//        System.err.println(s);
+        String fileName = "abccc";
+        boolean b = validateFileName(fileName);
+        System.out.println(b);
 
     }
 }

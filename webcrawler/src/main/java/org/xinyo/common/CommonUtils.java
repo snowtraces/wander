@@ -14,7 +14,7 @@ public class CommonUtils {
      */
     public static String getFilePath(String fileName) {
         if (Strings.isNullOrEmpty(PATH)) {
-            PATH = new File(CommonUtils.class.getProtectionDomain().getCodeSource().getLocation().getPath()).getParent() + File.separator;
+            PATH = new File(CommonUtils.class.getProtectionDomain().getCodeSource().getLocation().getPath()) + File.separator;
         }
         return PATH + fileName;
     }

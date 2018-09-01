@@ -24,7 +24,7 @@ public class WebUrl {
         this.url = url;
         this.type = type;
         this.depth = depth;
-        this.hashCode = String.valueOf(Hashing.md5().hashString(type,Charsets.UTF_8));
+        this.hashCode = String.valueOf(Hashing.md5().hashString(url,Charsets.UTF_8));
     }
 
     public String getHashCode() {
@@ -49,5 +49,15 @@ public class WebUrl {
 
     public void setType(String type) {
         this.type = type;
+    }
+
+    @Override
+    public String toString() {
+        return "WebUrl{" +
+                "hashCode='" + hashCode + '\'' +
+                ", url='" + url + '\'' +
+                ", type='" + type + '\'' +
+                ", depth=" + depth +
+                '}';
     }
 }

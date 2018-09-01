@@ -48,21 +48,14 @@ public class Crawler {
      * @throws InterruptedException
      */
     public void doCrawler() throws InterruptedException {
-        System.out.println("---try---");
         WebUrl webUrl = Data.getUrl();
         if (webUrl != null) {
             // 页面请求
             InputStream inputStream = request(webUrl);
             save(webUrl, inputStream);
-            synchronized (SINGLE) {
-                System.out.println("启动线程: " + Thread.currentThread().getName());
-                SINGLE.notify();
-            }
+            wake();
         } else {
-            synchronized (SINGLE) {
-                System.err.println("休眠线程: " + Thread.currentThread().getName());
-                SINGLE.wait();
-            }
+            sleep();
         }
     }
 

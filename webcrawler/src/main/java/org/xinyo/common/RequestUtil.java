@@ -24,6 +24,8 @@ public class RequestUtil {
      * @return
      */
     public static InputStream request(WebUrl webUrl) {
+        System.err.println(webUrl);
+
         CloseableHttpClient httpClient = getHttpClient();
 
         HttpGet httpget = new HttpGet(webUrl.getUrl());
@@ -48,25 +50,23 @@ public class RequestUtil {
         }
     }
 
-    private static class httpclientHolder {
-        static CookieStore cookieStore = new BasicCookieStore();
-        static RequestConfig config = RequestConfig.custom()
+    public static final CloseableHttpClient getHttpClient() {
+
+         CookieStore cookieStore = new BasicCookieStore();
+         RequestConfig config = RequestConfig.custom()
                 .setCookieSpec(CookieSpecs.DEFAULT)
                 .setSocketTimeout(30000)
                 .setConnectTimeout(30000)
                 .setConnectionRequestTimeout(30000)
                 .build();
 
-        static CloseableHttpClient httpClient = HttpClients.custom()
+         CloseableHttpClient httpClient = HttpClients.custom()
                 .setDefaultCookieStore(cookieStore)
                 .setDefaultRequestConfig(config)
                 .setUserAgent(USER_AGENT_CHROME)
                 .build();
-        private static final CloseableHttpClient INSTANCE = httpClient;
-    }
 
-    public static final CloseableHttpClient getHttpClient() {
-        return RequestUtil.httpclientHolder.INSTANCE;
+         return  httpClient;
     }
 
 

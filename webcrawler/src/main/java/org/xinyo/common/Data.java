@@ -28,19 +28,12 @@ public class Data {
     }
 
     public static synchronized WebUrl getUrl(){
-        System.out.println("---get--");
         if(newUrlList.size() == 0){
             return null;
         }
         WebUrl webUrl = newUrlList.remove(0);
-        if (webUrl != null) {
-            newSet.remove(webUrl.getHashCode());
-            return webUrl;
-        }
-        return null;
+        return webUrl;
     }
-
-
 }
 
 
