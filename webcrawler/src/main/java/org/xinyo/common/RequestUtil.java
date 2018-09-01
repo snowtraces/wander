@@ -24,8 +24,6 @@ public class RequestUtil {
      * @return
      */
     public static InputStream request(WebUrl webUrl) {
-        System.err.println(webUrl);
-
         CloseableHttpClient httpClient = getHttpClient();
 
         HttpGet httpget = new HttpGet(webUrl.getUrl());
@@ -34,7 +32,6 @@ public class RequestUtil {
             response = httpClient.execute(httpget);
 
             HttpEntity entity = response.getEntity();
-            System.out.println(response.getStatusLine());
             InputStream is = entity.getContent();
             return is;
         } catch (IOException e) {

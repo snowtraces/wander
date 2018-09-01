@@ -11,13 +11,12 @@ import org.jsoup.select.Elements;
 import org.xinyo.entity.WebUrl;
 
 import java.io.*;
-import java.nio.charset.Charset;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static org.xinyo.common.Constant.URL_TYPE_IMG;
+import static org.xinyo.common.Constant.DATA_BASE_PATH;
+import static org.xinyo.common.Constant.URL_TYPE_BINARY;
 import static org.xinyo.common.Constant.URL_TYPE_TEXT;
-import static sun.plugin.cache.FileVersion.regEx;
 
 public class FileUtils {
 
@@ -37,17 +36,18 @@ public class FileUtils {
         try {
             String type = webUrl.getType();
             FileOutputStream outputStream = new FileOutputStream(file);
-            if (URL_TYPE_IMG.equals(type)) {
-                // save
-                ByteStreams.copy(inputStream, outputStream);
-
-            } else {
+            if (URL_TYPE_TEXT.equals(type)) {
                 // save
                 String html = CharStreams.toString(new InputStreamReader(inputStream));
                 Files.write(html, file, Charsets.UTF_8);
 
                 // parse
                 parseHtml(webUrl, html);
+
+            } else {
+                // save
+                ByteStreams.copy(inputStream, outputStream);
+
             }
 
         } catch (Exception e) {
@@ -67,7 +67,8 @@ public class FileUtils {
         String[] split = url.split("/");
         int length = split.length;
 
-        String filePath = "";
+        String basePath = Config.getValue(DATA_BASE_PATH) + File.separator;
+        String filePath = basePath;
         String fileName = "";
 
         // 创建文件夹
@@ -87,7 +88,7 @@ public class FileUtils {
         }
 
         // 修改文件名
-        if (!URL_TYPE_IMG.equals(webUrl.getType())
+        if (!URL_TYPE_BINARY.equals(webUrl.getType())
                 && !fileName.endsWith(".htm")
                 && !fileName.endsWith(".html")) {
             fileName = fileName + ".htm";
@@ -112,7 +113,12 @@ public class FileUtils {
             href = normalizeUrl(webUrl, href);
 
             // 添加链接
-            Data.addUrl(href, URL_TYPE_TEXT, webUrl.getDepth() + 1);
+            if(href.endsWith(".pdf")){
+                Data.addUrl(href, URL_TYPE_BINARY, webUrl.getDepth() + 1);
+            } else {
+                Data.addUrl(href, URL_TYPE_TEXT, webUrl.getDepth() + 1);
+            }
+
         }
 
         // 2. img 标签处理
@@ -122,7 +128,7 @@ public class FileUtils {
             src = normalizeUrl(webUrl, src);
 
             // 添加链接
-            Data.addUrl(src, URL_TYPE_IMG, webUrl.getDepth() + 1);
+            Data.addUrl(src, URL_TYPE_BINARY, webUrl.getDepth() + 1);
         }
     }
 
@@ -178,7 +184,7 @@ public class FileUtils {
 
     public static void main(String[] args) throws IOException {
 //        WebUrl webUrl = new WebUrl();
-////        webUrl.setType(URL_TYPE_IMG);
+////        webUrl.setType(URL_TYPE_BINARY);
 //        webUrl.setUrl("https://xinyo.org");
 ////        InputStream inputStream = request(webUrl);
 ////        save(inputStream, webUrl);

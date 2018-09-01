@@ -12,6 +12,7 @@ import static org.xinyo.common.RequestUtil.request;
 
 public class Crawler {
     private static final String SINGLE = "single";
+    private volatile int activeThread = 0;
 
     /**
      * 爬虫启动方法
@@ -51,11 +52,24 @@ public class Crawler {
         WebUrl webUrl = Data.getUrl();
         if (webUrl != null) {
             // 页面请求
+            System.out.println("开始请求: " + webUrl);
             InputStream inputStream = request(webUrl);
             save(webUrl, inputStream);
+            System.out.println("完成请求: " + webUrl);
             wake();
         } else {
             sleep();
+        }
+    }
+
+    public void monitor(){
+        try {
+            while (true) {
+                Thread.sleep(10000);
+                System.err.println("当前活动线程数: " + activeThread);
+            }
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
     }
 
@@ -65,7 +79,10 @@ public class Crawler {
      */
     private void sleep() throws InterruptedException {
         synchronized (SINGLE) {
-            SINGLE.wait();
+            if(activeThread > 1){
+                activeThread--;
+                SINGLE.wait();
+            }
         }
     }
 
@@ -74,7 +91,10 @@ public class Crawler {
      */
     private void wake() {
         synchronized (SINGLE) {
-            SINGLE.notify();
+            if(activeThread < Config.getIntValue(THREAD_NUMBER)){
+                activeThread++;
+                SINGLE.notify();
+            }
         }
     }
 }
