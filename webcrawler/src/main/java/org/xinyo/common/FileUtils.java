@@ -105,7 +105,7 @@ public class FileUtils {
      * @param html
      */
     public static void parseHtml(WebUrl webUrl, String html) {
-        Document doc = Jsoup.parse(html, webUrl.getUrl());
+        Document doc = Jsoup.parse(html);
 
         // 1. a 标签处理
         Elements aTags = doc.getElementsByTag("a");
@@ -117,10 +117,11 @@ public class FileUtils {
             }
 
             // 添加链接
+            url = normalizeUrl(webUrl, url);
             if (url.endsWith(".pdf") || url.endsWith(".mp3")) {
                 Data.addUrl(url, URL_TYPE_BINARY, webUrl.getDepth() + 1);
             } else {
-                Data.addUrl(url, URL_TYPE_TEXT, webUrl.getDepth() + 1);
+                 Data.addUrl(url, URL_TYPE_TEXT, webUrl.getDepth() + 1);
             }
         }
 
@@ -128,12 +129,54 @@ public class FileUtils {
         Elements imgTags = doc.getElementsByTag("img");
         for (Element img : imgTags) {
             String url = img.attr("src");
-
+            url = normalizeUrl(webUrl, url);
             // 添加链接
             Data.addUrl(url, URL_TYPE_BINARY, webUrl.getDepth() + 1);
         }
     }
 
+    /**
+     * 链接标准化处理
+     *
+     * @param webUrl
+     * @param url
+     * @return
+     */
+    public static String normalizeUrl(WebUrl webUrl, String url) {
+        String pUrl = webUrl.getUrl();
+
+        String protocol = pUrl.startsWith("https") == true ? "https" : "http";// 协议
+        String domain = pUrl.replaceAll("^.*://([^/]+).*$", "$1");// 域名
+
+        // 不以http开头进行补全
+        while (!url.startsWith("http")) {
+            if (url.startsWith("//")) {
+                // 1. 双斜杠开头不为相对链接
+                url = protocol + ":" + url;
+
+            } else if (url.startsWith("/")) {
+                // 2. 单斜杠开头指向根域名
+                url = protocol + "://" + domain + url;
+
+            } else if (url.startsWith("../")) {
+                // 3. 相对链接处理, 指向上级目录
+                url = pUrl.replaceAll("^(.+/)[^/]+/[^/]+$", "$1") + url.substring(3);
+
+            } else if (url.startsWith("./")) {
+                // 4. 相对链接处理, 指向当前目录
+                url = pUrl.replaceAll("^(.+/)[^/]+$", "$1") + url.substring(2);
+
+            } else {
+                url = pUrl.replaceAll("^(.+/)[^/]+$", "$1") + url;
+            }
+        }
+
+        if (url.endsWith("/")) {
+            url = url.substring(0, url.length() - 1);
+        }
+
+        return url;
+    }
 
     private static boolean validateFileName(String fileName) {
         String regex = "[?*/\\<>:\"|]";

@@ -12,7 +12,10 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.xinyo.entity.WebUrl;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 
 import static org.xinyo.common.Constant.USER_AGENT_CHROME;
 
@@ -31,10 +34,18 @@ public class RequestUtil {
         try {
             response = httpClient.execute(httpget);
 
-            HttpEntity entity = response.getEntity();
-            InputStream is = entity.getContent();
-            return is;
+            int status = response.getStatusLine().getStatusCode();
+            if (status >= 200 && status < 300) {
+                HttpEntity entity = response.getEntity();
+                InputStream is = entity.getContent();
+                return is;
+            } else {
+                System.err.println("Unexpected response status: " + status);
+                return  null;
+            }
+
         } catch (IOException e) {
+            Data.addUrlForce(webUrl);
             e.printStackTrace();
             if(response != null){
                 try {
