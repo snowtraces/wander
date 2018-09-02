@@ -79,7 +79,7 @@ public class Crawler {
      */
     private void sleep() throws InterruptedException {
         synchronized (SINGLE) {
-            if(activeThread > 1){
+            if(activeThread > 0){
                 activeThread--;
                 SINGLE.wait();
             }
@@ -91,7 +91,7 @@ public class Crawler {
      */
     private void wake() {
         synchronized (SINGLE) {
-            if(activeThread < Config.getIntValue(THREAD_NUMBER)){
+            while(activeThread < Config.getIntValue(THREAD_NUMBER)){
                 activeThread++;
                 SINGLE.notify();
             }
