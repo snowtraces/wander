@@ -11,7 +11,6 @@ import org.jsoup.select.Elements;
 import org.xinyo.entity.WebUrl;
 
 import java.io.*;
-import java.nio.charset.Charset;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -38,7 +37,7 @@ public class FileUtils {
             if (URL_TYPE_TEXT.equals(type)) {
                 // save
                 // TODO 编码处理
-                String html = CharStreams.toString(new InputStreamReader(inputStream, Config.getValue(DATA_CHAERSET_NAME)));
+                String html = CharStreams.toString(new InputStreamReader(inputStream, Config.getValue(DATA_CHARSET_NAME)));
 
                 Files.write(html, file, Charsets.UTF_8);
 
