@@ -74,8 +74,6 @@ public class Data {
         newUrlList.add(webUrl);
     }
 
-
-
 }
 
 

@@ -38,13 +38,11 @@ public class Crawler {
         for (int i = 0; i < threadNumber; i++) {
             activeThread++;
             new Thread(() -> {
-                synchronized (SINGLE) {
-                    while (true) {
-                        try {
-                            doCrawler();
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
+                while (true) {
+                    try {
+                        doCrawler();
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
                     }
                 }
             }, "thread-" + i).start();
@@ -86,9 +84,11 @@ public class Crawler {
      * @throws InterruptedException
      */
     private void sleep() throws InterruptedException {
-        if(activeThread > 0){
-            activeThread--;
-            SINGLE.wait();
+        synchronized (SINGLE) {
+            if (activeThread > 0) {
+                activeThread--;
+                SINGLE.wait();
+            }
         }
     }
 
@@ -96,9 +96,11 @@ public class Crawler {
      * 唤醒
      */
     private void wake() {
-        while(activeThread < Config.getIntValue(THREAD_NUMBER)){
-            activeThread++;
-            SINGLE.notify();
+        synchronized (SINGLE) {
+            while (activeThread < Config.getIntValue(THREAD_NUMBER)) {
+                activeThread++;
+                SINGLE.notify();
+            }
         }
     }
 }
