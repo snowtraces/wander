@@ -19,7 +19,7 @@ import java.io.InputStream;
 
 import static org.xinyo.common.Constant.USER_AGENT_CHROME;
 
-public class RequestUtil {
+public class RequestUtils {
 
     /**
      * 请求

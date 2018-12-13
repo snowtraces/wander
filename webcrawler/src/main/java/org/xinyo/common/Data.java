@@ -47,8 +47,8 @@ public class Data {
         WebUrl webUrl = new WebUrl(url, type, depth);
         String hash = webUrl.getHashCode();
 
-        boolean isnew = newSet.add(hash);
-        if(isnew){
+        boolean isNew = newSet.add(hash);
+        if(isNew){
             newUrlList.add(webUrl);
             return true;
         }

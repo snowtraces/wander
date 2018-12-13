@@ -9,7 +9,7 @@ import java.io.InputStream;
 import static org.xinyo.common.Constant.THREAD_NUMBER;
 import static org.xinyo.common.FileUtils.log;
 import static org.xinyo.common.FileUtils.save;
-import static org.xinyo.common.RequestUtil.request;
+import static org.xinyo.common.RequestUtils.request;
 
 public class Crawler {
     private static final String SINGLE = "single";
