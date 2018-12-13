@@ -9,7 +9,7 @@ public class CrawlerMain {
     public static void main(String[] args) {
         // 1. 初始化参数
         Config.initConfig(CommonUtils.getFilePath("config.properties"));
-        Data.initUrl("https://www.gushiwen.org");
+        Data.initUrl("");
 
         // 2. 启动线程
         Crawler crawler = new Crawler();

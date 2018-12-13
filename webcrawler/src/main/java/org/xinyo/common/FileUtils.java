@@ -11,6 +11,8 @@ import org.jsoup.select.Elements;
 import org.xinyo.entity.WebUrl;
 
 import java.io.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -55,6 +57,10 @@ public class FileUtils {
         }
     }
 
+    /**
+     * 保存日志
+     * @param webUrl
+     */
     public static void log(WebUrl webUrl) {
         File log = new File(Config.getValue(DATA_BASE_PATH) + File.separator +  "spider.log");
         try {
@@ -62,6 +68,25 @@ public class FileUtils {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    /**
+     * 加载日志
+     * @return
+     */
+    public static List<String> loadLog() {
+        List<String> result = new ArrayList<>();
+
+        File log = new File(Config.getValue(DATA_BASE_PATH) + File.separator +  "spider.log");
+        try {
+            List<String> strings = Files.readLines(log, Charsets.UTF_8);
+            for (String s : strings) {
+                result.add(s.substring(17,49));
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return result;
     }
 
     /**

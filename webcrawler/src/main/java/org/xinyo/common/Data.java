@@ -9,7 +9,6 @@ import static org.xinyo.common.Constant.URL_TYPE_TEXT;
 
 public class Data {
     private static List<WebUrl> newUrlList = new ArrayList<>();
-    private static HashSet<String> newSet = new HashSet<>();
     private static String domain = "";
 
     /**
@@ -47,8 +46,9 @@ public class Data {
         WebUrl webUrl = new WebUrl(url, type, depth);
         String hash = webUrl.getHashCode();
 
-        boolean isNew = newSet.add(hash);
-        if(isNew){
+        boolean isContain = BloomFilterUtils.check(hash);
+
+        if(!isContain){
             newUrlList.add(webUrl);
             return true;
         }

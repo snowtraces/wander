@@ -1,5 +1,6 @@
 package org.xinyo.code;
 
+import org.xinyo.common.BloomFilterUtils;
 import org.xinyo.common.Config;
 import org.xinyo.common.Data;
 import org.xinyo.entity.WebUrl;
@@ -19,6 +20,8 @@ public class Crawler {
      * 爬虫启动方法
      */
     public void startCrawler() {
+        BloomFilterUtils.initFilter();
+
         // 1. 获取目标线程数
         int threadNumber = Config.getIntValue(THREAD_NUMBER);
 
@@ -34,11 +37,13 @@ public class Crawler {
     public void initThread(int threadNumber) {
         for (int i = 0; i < threadNumber; i++) {
             new Thread(() -> {
-                while (true) {
-                    try {
-                        doCrawler();
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
+                synchronized (SINGLE) {
+                    while (true) {
+                        try {
+                            doCrawler();
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
                     }
                 }
             }, "thread-" + i).start();
@@ -50,6 +55,7 @@ public class Crawler {
      * @throws InterruptedException
      */
     public void doCrawler() throws InterruptedException {
+        activeThread++;
         WebUrl webUrl = Data.getUrl();
         if (webUrl != null) {
             // 页面请求
