@@ -72,7 +72,6 @@ public class Data {
 
     public static synchronized void addUrlForce(WebUrl webUrl){
         newUrlList.add(webUrl);
-        BloomFilterUtils.push(webUrl.getHashCode());
     }
 
 
