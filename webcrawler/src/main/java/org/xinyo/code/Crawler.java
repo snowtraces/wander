@@ -7,6 +7,7 @@ import org.xinyo.entity.WebUrl;
 import java.io.InputStream;
 
 import static org.xinyo.common.Constant.THREAD_NUMBER;
+import static org.xinyo.common.FileUtils.log;
 import static org.xinyo.common.FileUtils.save;
 import static org.xinyo.common.RequestUtil.request;
 
@@ -56,6 +57,7 @@ public class Crawler {
             InputStream inputStream = request(webUrl);
             save(webUrl, inputStream);
             System.out.println("完成请求: " + webUrl);
+            log(webUrl);
             wake();
         } else {
             sleep();

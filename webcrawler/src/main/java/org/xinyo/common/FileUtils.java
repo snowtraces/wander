@@ -55,6 +55,15 @@ public class FileUtils {
         }
     }
 
+    public static void log(WebUrl webUrl) {
+        File log = new File(Config.getValue(DATA_BASE_PATH) + File.separator +  "spider.log");
+        try {
+            Files.append(webUrl.toString() + "\n", log, Charsets.UTF_8);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     /**
      * 初始化文件夹
      *
