@@ -3,7 +3,7 @@ package org.xinyo.common;
 public class Constant {
     public static final String THREAD_NUMBER = "thread.number";
     public static final String DATA_BASE_PATH = "data.base.path";
-    public static final String DATA_CHAERSET_NAME = "data.charset.name";
+    public static final String DATA_CHARSET_NAME = "data.charset.name";
 
     public static final String URL_TYPE_TEXT = "text";
     public static final String URL_TYPE_BINARY = "binary";
