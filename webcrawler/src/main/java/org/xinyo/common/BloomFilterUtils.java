@@ -40,9 +40,6 @@ public class BloomFilterUtils {
      * @return true:已存在， false:不存在
      */
     public static boolean check(String input) {
-        if (bloomFilter == null) {
-            return false;
-        }
         return bloomFilter.mightContain(input.getBytes());
     }
 }

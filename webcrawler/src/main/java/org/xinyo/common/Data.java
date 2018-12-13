@@ -5,6 +5,7 @@ import org.xinyo.entity.WebUrl;
 
 import java.util.*;
 
+import static org.xinyo.common.Constant.EXCLUDE_PATH;
 import static org.xinyo.common.Constant.URL_TYPE_TEXT;
 
 public class Data {
@@ -14,7 +15,7 @@ public class Data {
     /**
      * 初始化添加新链接
      */
-    public static synchronized boolean initUrl(String url) {
+    public static synchronized void initUrl(String url) {
         String domain = url.replaceAll("^.*://([^/]+).*$", "$1");// 域名
         String[] split = domain.split("\\.");
         int len = split.length;
@@ -29,7 +30,7 @@ public class Data {
         String rootDomain = Joiner.on(".").join(newSplit);
         Data.domain = rootDomain;
 
-        return addUrl(url, URL_TYPE_TEXT, 0);
+        addUrlForce(new WebUrl(url, URL_TYPE_TEXT, 0));
     }
 
     /**
@@ -43,6 +44,11 @@ public class Data {
             return false;
         }
 
+        // 判断过滤字段
+        if (url.contains(Config.getValue(EXCLUDE_PATH))) {
+            return false;
+        }
+
         WebUrl webUrl = new WebUrl(url, type, depth);
         String hash = webUrl.getHashCode();
 
@@ -50,6 +56,7 @@ public class Data {
 
         if(!isContain){
             newUrlList.add(webUrl);
+            BloomFilterUtils.push(hash);
             return true;
         }
         return false;
@@ -65,6 +72,7 @@ public class Data {
 
     public static synchronized void addUrlForce(WebUrl webUrl){
         newUrlList.add(webUrl);
+        BloomFilterUtils.push(webUrl.getHashCode());
     }
 
 
