@@ -58,9 +58,8 @@ public class Data {
         boolean isLogContain = BloomFilterUtils.checkLog(hash);
 
         // 1. 不包含
-        // 2. 日志中不包含
-        // 3. 日志中包含，但类型为文本，进行读取后续链接
-        if(!isContain || !isLogContain || type.equals(URL_TYPE_TEXT)){
+        // 2. 日志中不包含; 日志中包含，但类型为文本，进行读取后续链接
+        if (!isContain && (!isLogContain || type.equals(URL_TYPE_TEXT))) {
             newUrlList.add(webUrl);
             BloomFilterUtils.push(hash);
             return true;
