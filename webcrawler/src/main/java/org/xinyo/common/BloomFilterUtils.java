@@ -1,5 +1,6 @@
 package org.xinyo.common;
 
+import com.google.common.base.Strings;
 import com.google.common.hash.BloomFilter;
 import com.google.common.hash.Funnels;
 
@@ -27,10 +28,13 @@ public class BloomFilterUtils {
         int size = strings.size();
         filterSize = Math.max(filterSize, size * 2);
 
-        bloomFilter = BloomFilter.create(Funnels.byteArrayFunnel(), filterSize, 0.001);
+        logBloomFilter = BloomFilter.create(Funnels.byteArrayFunnel(), filterSize, 0.001);
 
          // 2. 初始化数据
         for (String s : strings) {
+            if (Strings.isNullOrEmpty(s)) {
+                continue;
+            }
             logBloomFilter.put(s.getBytes());
         }
 
