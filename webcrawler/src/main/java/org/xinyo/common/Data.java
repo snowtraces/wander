@@ -3,7 +3,9 @@ package org.xinyo.common;
 import com.google.common.base.Joiner;
 import org.xinyo.entity.WebUrl;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import static org.xinyo.common.Constant.EXCLUDE_PATH;
 import static org.xinyo.common.Constant.URL_TYPE_TEXT;
@@ -53,8 +55,12 @@ public class Data {
         String hash = webUrl.getHashCode();
 
         boolean isContain = BloomFilterUtils.check(hash);
+        boolean isLogContain = BloomFilterUtils.checkLog(hash);
 
-        if(!isContain){
+        // 1. 不包含
+        // 2. 日志中不包含
+        // 3. 日志中包含，但类型为文本，进行读取后续链接
+        if(!isContain || !isLogContain || type.equals(URL_TYPE_TEXT)){
             newUrlList.add(webUrl);
             BloomFilterUtils.push(hash);
             return true;

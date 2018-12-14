@@ -41,7 +41,11 @@ public class FileUtils {
                 // TODO 编码处理
                 String html = CharStreams.toString(new InputStreamReader(inputStream, Config.getValue(DATA_CHARSET_NAME)));
 
-                Files.write(html, file, Charsets.UTF_8);
+                // 判断日志中是否已经存在
+                boolean isContain = BloomFilterUtils.checkLog(webUrl.getHashCode());
+                if (!isContain) {
+                    Files.write(html, file, Charsets.UTF_8);
+                }
 
                 // parse
                 parseHtml(webUrl, html);

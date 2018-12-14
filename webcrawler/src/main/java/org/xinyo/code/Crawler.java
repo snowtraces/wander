@@ -21,6 +21,7 @@ public class Crawler {
      */
     public void startCrawler() {
         BloomFilterUtils.initFilter();
+        BloomFilterUtils.initLogFilter();
 
         // 1. 获取目标线程数
         int threadNumber = Config.getIntValue(THREAD_NUMBER);

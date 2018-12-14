@@ -12,22 +12,29 @@ import static org.xinyo.common.Constant.BLOOM_FILTER_SIZE;
  */
 public class BloomFilterUtils {
     private static BloomFilter bloomFilter = null;
+    private static BloomFilter logBloomFilter = null;
 
     public static void initFilter() {
         // 1. 新建过滤器
         int filterSize = Config.getIntValue(BLOOM_FILTER_SIZE);
-//        List<String> strings = FileUtils.loadLog();
-//        int size = strings.size();
-//        filterSize = Math.max(filterSize, size * 3);
+        bloomFilter = BloomFilter.create(Funnels.byteArrayFunnel(), filterSize, 0.001);
+    }
+
+    public static void initLogFilter() {
+        // 1. 新建过滤器
+        int filterSize = Config.getIntValue(BLOOM_FILTER_SIZE);
+        List<String> strings = FileUtils.loadLog();
+        int size = strings.size();
+        filterSize = Math.max(filterSize, size * 2);
 
         bloomFilter = BloomFilter.create(Funnels.byteArrayFunnel(), filterSize, 0.001);
 
-        // 2. 初始化数据
-//        for (String s : strings) {
-//            push(s);
-//        }
+         // 2. 初始化数据
+        for (String s : strings) {
+            logBloomFilter.put(s.getBytes());
+        }
 
-//        System.err.println("BloomFilter 初始化完毕");
+        System.err.println("logBloomFilter 初始化完毕");
     }
 
     public static void push(String input){
@@ -41,5 +48,9 @@ public class BloomFilterUtils {
      */
     public static boolean check(String input) {
         return bloomFilter.mightContain(input.getBytes());
+    }
+
+    public static boolean checkLog(String input) {
+        return logBloomFilter.mightContain(input.getBytes());
     }
 }
