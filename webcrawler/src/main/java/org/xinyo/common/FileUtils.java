@@ -62,7 +62,7 @@ public class FileUtils {
      * @param webUrl
      */
     public static void log(WebUrl webUrl) {
-        File log = new File(Config.getValue(DATA_BASE_PATH) + File.separator +  "spider.log");
+        File log = new File(Config.getValue(DATA_BASE_PATH) + File.separator + Config.getValue(INCLUDE_PATH) +  "_spider.log");
         try {
             Files.append(webUrl.toString() + "\n", log, Charsets.UTF_8);
         } catch (IOException e) {
@@ -77,7 +77,7 @@ public class FileUtils {
     public static List<String> loadLog() {
         List<String> result = new ArrayList<>();
 
-        File log = new File(Config.getValue(DATA_BASE_PATH) + File.separator +  "spider.log");
+        File log = new File(Config.getValue(DATA_BASE_PATH) + File.separator + Config.getValue(INCLUDE_PATH) +  "_spider.log");
         try {
             List<String> strings = Files.readLines(log, Charsets.UTF_8);
             for (String s : strings) {
@@ -97,7 +97,7 @@ public class FileUtils {
      */
     public static File initFile(WebUrl webUrl) {
         String url = webUrl.getUrl();
-        url = url.substring(url.indexOf("//") + 2, url.length());
+        url = url.substring(url.indexOf("//") + 2);
         String[] split = url.split("/");
         int length = split.length;
 
@@ -182,7 +182,7 @@ public class FileUtils {
         String domain = pUrl.replaceAll("^.*://([^/]+).*$", "$1");// 域名
 
         // 不以http开头进行补全
-        while (!url.startsWith("http")) {
+        if (!url.startsWith("http")) {
             if (url.startsWith("//")) {
                 // 1. 双斜杠开头不为相对链接
                 url = protocol + ":" + url;
@@ -193,12 +193,14 @@ public class FileUtils {
 
             } else if (url.startsWith("../")) {
                 // 3. 相对链接处理, 指向上级目录
-                url = pUrl.replaceAll("^(.+/)[^/]+/[^/]+$", "$1") + url.substring(3);
-
+                while (url.startsWith("../")) {
+                    pUrl = pUrl.replaceAll("^(.+/)[^/]+/[^/]*$", "$1");
+                    url = url.substring(3);
+                }
+                url = pUrl + url;
             } else if (url.startsWith("./")) {
                 // 4. 相对链接处理, 指向当前目录
                 url = pUrl.replaceAll("^(.+/)[^/]+$", "$1") + url.substring(2);
-
             } else {
                 url = pUrl.replaceAll("^(.+/)[^/]+$", "$1") + url;
             }

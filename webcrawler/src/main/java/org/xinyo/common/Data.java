@@ -3,15 +3,16 @@ package org.xinyo.common;
 import com.google.common.base.Joiner;
 import org.xinyo.entity.WebUrl;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.xinyo.common.Constant.EXCLUDE_PATH;
 import static org.xinyo.common.Constant.URL_TYPE_TEXT;
 
 public class Data {
-    private static List<WebUrl> newUrlList = new ArrayList<>();
+    private static volatile List<WebUrl> newTextList = new ArrayList<>();
+    private static volatile List<WebUrl> newBinaryList = new ArrayList<>();
     private static String domain = "";
 
     /**
@@ -47,7 +48,8 @@ public class Data {
         }
 
         // 判断过滤字段
-        if (url.contains(Config.getValue(EXCLUDE_PATH))) {
+        boolean addFilter = FilterUtils.addFilter(url);
+        if (!addFilter) {
             return false;
         }
 
@@ -57,26 +59,53 @@ public class Data {
         boolean isContain = BloomFilterUtils.check(hash);
         boolean isLogContain = BloomFilterUtils.checkLog(hash);
 
-        // 1. 不包含
-        // 2. 日志中不包含; 日志中包含，但类型为文本，进行读取后续链接
-        if (!isContain && (!isLogContain || type.equals(URL_TYPE_TEXT))) {
-            newUrlList.add(webUrl);
-            BloomFilterUtils.push(hash);
-            return true;
+        if (isContain) {
+            return false;
         }
-        return false;
+
+        if (!isLogContain) {
+            // 1. 日志不包含
+            add(webUrl);
+            BloomFilterUtils.push(hash);
+        } else if (type.equals(URL_TYPE_TEXT)) {
+            // 2. 日志中包含，但类型为文本，进行读取后续链接
+            add(webUrl);
+        }
+        return true;
     }
 
     public static synchronized WebUrl getUrl(){
-        if(newUrlList.size() == 0){
-            return null;
+        if (newTextList.size() == 0){
+            if(newBinaryList.size() == 0) {
+                return null;
+            } else {
+                return newBinaryList.remove(0);
+            }
+        } else {
+            if (newBinaryList.size() == 0) {
+                return newTextList.remove(0);
+            } else {
+                int second = LocalDateTime.now().getSecond();
+                if ((second & 3) == 0) {
+                    return newTextList.remove(0);
+                } else {
+                    return newBinaryList.remove(0);
+                }
+            }
         }
-        WebUrl webUrl = newUrlList.remove(0);
-        return webUrl;
     }
 
     public static synchronized void addUrlForce(WebUrl webUrl){
-        newUrlList.add(webUrl);
+        add(webUrl);
+    }
+
+    private static void add(WebUrl webUrl){
+        String type = webUrl.getType();
+        if (type.equals(URL_TYPE_TEXT)) {
+            newTextList.add(webUrl);
+        } else {
+            newBinaryList.add(webUrl);
+        }
     }
 
 }
