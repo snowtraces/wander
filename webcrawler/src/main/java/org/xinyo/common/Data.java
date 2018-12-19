@@ -54,7 +54,7 @@ public class Data {
         }
 
         WebUrl webUrl = new WebUrl(url, type, depth);
-        String hash = webUrl.getHashCode();
+        String hash = webUrl.getHash();
 
         boolean isContain = BloomFilterUtils.check(hash);
         boolean isLogContain = BloomFilterUtils.checkLog(hash);
@@ -66,7 +66,6 @@ public class Data {
         if (!isLogContain) {
             // 1. 日志不包含
             add(webUrl);
-            BloomFilterUtils.push(hash);
         } else if (type.equals(URL_TYPE_TEXT)) {
             // 2. 日志中包含，但类型为文本，进行读取后续链接
             add(webUrl);
@@ -101,6 +100,7 @@ public class Data {
 
     private static void add(WebUrl webUrl){
         String type = webUrl.getType();
+        BloomFilterUtils.push(webUrl.getHash());
         if (type.equals(URL_TYPE_TEXT)) {
             newTextList.add(webUrl);
         } else {

@@ -4,7 +4,7 @@ import com.google.common.base.Charsets;
 import com.google.common.hash.Hashing;
 
 public class WebUrl {
-    private String hashCode;
+    private String hash;
     private String url;
     private String type;
     private int depth;
@@ -24,15 +24,15 @@ public class WebUrl {
         this.url = url;
         this.type = type;
         this.depth = depth;
-        this.hashCode = String.valueOf(Hashing.md5().hashString(url,Charsets.UTF_8));
+        this.hash = String.valueOf(Hashing.md5().hashString(url,Charsets.UTF_8));
     }
 
-    public String getHashCode() {
-        return hashCode;
+    public String getHash() {
+        return hash;
     }
 
-    public void setHashCode(String hashCode) {
-        this.hashCode = hashCode;
+    public void setHash(String hash) {
+        this.hash = hash;
     }
 
     public String getUrl() {
@@ -54,7 +54,7 @@ public class WebUrl {
     @Override
     public String toString() {
         return "WebUrl{" +
-                "hashCode='" + hashCode + '\'' +
+                "hash='" + hash + '\'' +
                 ", url='" + url + '\'' +
                 ", type='" + type + '\'' +
                 ", depth=" + depth +

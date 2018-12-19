@@ -81,7 +81,7 @@ public class FileUtils {
         try {
             List<String> strings = Files.readLines(log, Charsets.UTF_8);
             for (String s : strings) {
-                result.add(s.substring(17,49));
+                result.add(s.substring(13, 45));
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -116,7 +116,7 @@ public class FileUtils {
             } else {
                 fileName = split[i];
                 if (validateFileName(fileName)) {
-                    fileName = webUrl.getHashCode();
+                    fileName = webUrl.getHash();
                 }
             }
         }
