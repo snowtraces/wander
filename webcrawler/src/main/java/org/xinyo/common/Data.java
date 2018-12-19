@@ -70,6 +70,7 @@ public class Data {
             // 2. 日志中包含，但类型为文本，进行读取后续链接
             add(webUrl);
         }
+        BloomFilterUtils.push(webUrl.getHash());
         return true;
     }
 
@@ -100,7 +101,6 @@ public class Data {
 
     private static void add(WebUrl webUrl){
         String type = webUrl.getType();
-        BloomFilterUtils.push(webUrl.getHash());
         if (type.equals(URL_TYPE_TEXT)) {
             newTextList.add(webUrl);
         } else {
