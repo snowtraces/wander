@@ -99,6 +99,13 @@ public class Data {
         add(webUrl);
     }
 
+    public static boolean isEmpty(){
+        if (newTextList.size() == 0 && newBinaryList.size() == 0) {
+            return true;
+        }
+        return false;
+    }
+
     private static void add(WebUrl webUrl){
         String type = webUrl.getType();
         if (type.equals(URL_TYPE_TEXT)) {

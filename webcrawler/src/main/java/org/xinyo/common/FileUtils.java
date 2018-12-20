@@ -71,6 +71,19 @@ public class FileUtils {
     }
 
     /**
+     * 保存日志
+     * @param logString
+     */
+    public static void log(String logString) {
+        File log = new File(Config.getValue(DATA_BASE_PATH) + File.separator + Config.getValue(INCLUDE_PATH) +  "_spider.log");
+        try {
+            Files.append(logString + "\n", log, Charsets.UTF_8);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
      * 加载日志
      * @return
      */
@@ -81,7 +94,9 @@ public class FileUtils {
         try {
             List<String> strings = Files.readLines(log, Charsets.UTF_8);
             for (String s : strings) {
-                result.add(s.substring(13, 45));
+                if (s.startsWith("WebUrl")) {
+                    result.add(s.substring(13, 45));
+                }
             }
         } catch (IOException e) {
             e.printStackTrace();

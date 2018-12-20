@@ -73,7 +73,13 @@ public class Crawler {
         try {
             while (true) {
                 Thread.sleep(10000);
+                log("当前活动线程数: " + activeThread);
                 System.err.println("当前活动线程数: " + activeThread);
+                if (activeThread == 0) {
+                    if (!Data.isEmpty()) {
+                        wake();
+                    }
+                }
             }
         } catch (InterruptedException e) {
             e.printStackTrace();
