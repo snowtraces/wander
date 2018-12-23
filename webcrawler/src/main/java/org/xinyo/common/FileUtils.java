@@ -166,7 +166,7 @@ public class FileUtils {
 
             // 添加链接
             url = normalizeUrl(webUrl, url);
-            if (url.endsWith(".pdf") || url.endsWith(".mp3")) {
+            if (url.matches("^(?i).+\\.(jpg|pdf|mp3|jpeg|png)$")) {
                 Data.addUrl(url, URL_TYPE_BINARY, webUrl.getDepth() + 1);
             } else {
                  Data.addUrl(url, URL_TYPE_TEXT, webUrl.getDepth() + 1);
