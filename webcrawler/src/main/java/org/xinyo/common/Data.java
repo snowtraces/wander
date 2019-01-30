@@ -57,12 +57,12 @@ public class Data {
         String hash = webUrl.getHash();
 
         boolean isContain = BloomFilterUtils.check(hash);
-        boolean isLogContain = BloomFilterUtils.checkLog(hash);
 
         if (isContain) {
             return false;
         }
 
+        boolean isLogContain = BloomFilterUtils.checkLog(hash);
         if (!isLogContain) {
             // 1. 日志不包含
             add(webUrl);

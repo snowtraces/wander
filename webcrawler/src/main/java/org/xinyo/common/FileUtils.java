@@ -35,7 +35,6 @@ public class FileUtils {
         // 2. 判断文件类型
         try {
             String type = webUrl.getType();
-            FileOutputStream outputStream = new FileOutputStream(file);
             if (URL_TYPE_TEXT.equals(type)) {
                 // save
                 // TODO 编码处理
@@ -48,8 +47,8 @@ public class FileUtils {
 
             } else {
                 // save
+                FileOutputStream outputStream = new FileOutputStream(file);
                 ByteStreams.copy(inputStream, outputStream);
-
             }
 
         } catch (Exception e) {
@@ -90,8 +89,8 @@ public class FileUtils {
     public static List<String> loadLog() {
         List<String> result = new ArrayList<>();
 
-        File log = new File(Config.getValue(DATA_BASE_PATH) + File.separator + Config.getValue(INCLUDE_PATH) +  "_spider.log");
         try {
+            File log = new File(Config.getValue(DATA_BASE_PATH) + File.separator + Config.getValue(INCLUDE_PATH) +  "_spider.log");
             List<String> strings = Files.readLines(log, Charsets.UTF_8);
             for (String s : strings) {
                 if (s.startsWith("WebUrl")) {
@@ -169,7 +168,7 @@ public class FileUtils {
             if (url.matches("^(?i).+\\.(jpg|pdf|mp3|jpeg|png)$")) {
                 Data.addUrl(url, URL_TYPE_BINARY, webUrl.getDepth() + 1);
             } else {
-                 Data.addUrl(url, URL_TYPE_TEXT, webUrl.getDepth() + 1);
+                Data.addUrl(url, URL_TYPE_TEXT, webUrl.getDepth() + 1);
             }
         }
 

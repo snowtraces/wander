@@ -62,7 +62,9 @@ public class Crawler {
             InputStream inputStream = request(webUrl);
             save(webUrl, inputStream);
             System.out.println("完成请求: " + webUrl);
-            log(webUrl);
+            if (!BloomFilterUtils.checkLog(webUrl.getHash())) {
+                log(webUrl);
+            }
             wake();
         } else {
             sleep();
