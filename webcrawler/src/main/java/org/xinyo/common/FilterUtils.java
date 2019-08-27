@@ -6,8 +6,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.xinyo.common.Constant.EXCLUDE_PATH;
-import static org.xinyo.common.Constant.INCLUDE_PATH;
+import static org.xinyo.common.Constant.*;
 
 public class FilterUtils {
 
@@ -45,4 +44,21 @@ public class FilterUtils {
         return Arrays.asList(split);
     }
 
+    public static String removeTail(String url) {
+        String tailRegex = Config.getValue(REMOVE_TAIL);
+        String regex = "^(.*)" + tailRegex;
+
+        url = url.replaceAll(regex, "$1");
+//        if (url.endsWith("/")) {
+//            url = url.substring(0, url.length() -1);
+//        }
+        return url;
+    }
+
+    public static void main(String[] args) {
+        Config.initConfig(CommonUtils.getFilePath("config.properties"));
+        String url = "https://movie.douban.com/subject/1291841/?from=top250";
+        String s = removeTail(url);
+        System.err.println(s);
+    }
 }

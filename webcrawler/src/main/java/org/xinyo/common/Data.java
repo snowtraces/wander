@@ -35,6 +35,20 @@ public class Data {
 
         addUrlForce(new WebUrl(url, URL_TYPE_TEXT, 0));
     }
+    public static void initUrlAndFilter(String url) {
+        BloomFilterUtils.initFilter();
+        BloomFilterUtils.initLogFilter();
+
+        initUrl(url);
+    }
+
+    public static void initUrlAndFilter(List<String> urls) {
+        BloomFilterUtils.initFilter();
+        BloomFilterUtils.initLogFilter();
+
+        urls.forEach( url -> initUrl(url));
+    }
+
 
     /**
      * 添加新链接
@@ -46,6 +60,13 @@ public class Data {
         if(!url.contains(Data.domain)){
             return false;
         }
+
+        if (depth > 0) {
+            return false;
+        }
+
+        // 尾部过滤
+        url = FilterUtils.removeTail(url);
 
         // 判断过滤字段
         boolean addFilter = FilterUtils.addFilter(url);
@@ -96,7 +117,10 @@ public class Data {
     }
 
     public static synchronized void addUrlForce(WebUrl webUrl){
-        add(webUrl);
+        boolean isLogContain = BloomFilterUtils.checkLog(webUrl.getHash());
+        if (!isLogContain) {
+            add(webUrl);
+        }
     }
 
     public static boolean isEmpty(){

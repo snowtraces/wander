@@ -20,6 +20,8 @@ import java.io.InputStream;
 import static org.xinyo.common.Constant.USER_AGENT_CHROME;
 
 public class RequestUtils {
+    static CookieStore cookieStore = new BasicCookieStore();
+
 
     /**
      * 请求
@@ -45,7 +47,7 @@ public class RequestUtils {
             }
 
         } catch (IOException e) {
-            Data.addUrlForce(webUrl);
+//            Data.addUrlForce(webUrl);
             e.printStackTrace();
             if(response != null){
                 try {
@@ -60,7 +62,6 @@ public class RequestUtils {
 
     public static final CloseableHttpClient getHttpClient() {
 
-         CookieStore cookieStore = new BasicCookieStore();
          RequestConfig config = RequestConfig.custom()
                 .setCookieSpec(CookieSpecs.DEFAULT)
                 .setSocketTimeout(30000)
