@@ -4,6 +4,7 @@ import com.google.common.base.Strings;
 import com.google.common.hash.BloomFilter;
 import com.google.common.hash.Funnels;
 
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 import static org.xinyo.common.Constant.BLOOM_FILTER_SIZE;
@@ -35,14 +36,14 @@ public class BloomFilterUtils {
             if (Strings.isNullOrEmpty(s)) {
                 continue;
             }
-            logBloomFilter.put(s.getBytes());
+            logBloomFilter.put(s.getBytes(StandardCharsets.UTF_8));
         }
 
         System.err.println("logBloomFilter 初始化完毕");
     }
 
     public static void push(String input){
-        bloomFilter.put(input.getBytes());
+        bloomFilter.put(input.getBytes(StandardCharsets.UTF_8));
     }
 
     /**
@@ -51,10 +52,10 @@ public class BloomFilterUtils {
      * @return true:已存在， false:不存在
      */
     public static boolean check(String input) {
-        return bloomFilter.mightContain(input.getBytes());
+        return bloomFilter.mightContain(input.getBytes(StandardCharsets.UTF_8));
     }
 
     public static boolean checkLog(String input) {
-        return logBloomFilter.mightContain(input.getBytes());
+        return logBloomFilter.mightContain(input.getBytes(StandardCharsets.UTF_8));
     }
 }

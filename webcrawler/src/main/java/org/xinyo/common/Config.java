@@ -10,10 +10,8 @@ public class Config {
 
 
     public static void initConfig(String configFilePath) {
-        try {
-            FileInputStream fileInputStream = new FileInputStream(configFilePath);
+        try (FileInputStream fileInputStream = new FileInputStream(configFilePath)) {
             CONFIG_PROPERTIES.load(fileInputStream);
-            fileInputStream.close();
         } catch (IOException e) {
             e.printStackTrace();
         }

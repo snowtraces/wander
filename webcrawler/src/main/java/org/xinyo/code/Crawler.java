@@ -6,6 +6,7 @@ import org.xinyo.common.Data;
 import org.xinyo.entity.WebUrl;
 
 import java.io.InputStream;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.xinyo.common.Constant.THREAD_NUMBER;
 import static org.xinyo.common.FileUtils.log;
@@ -13,8 +14,8 @@ import static org.xinyo.common.FileUtils.save;
 import static org.xinyo.common.RequestUtils.request;
 
 public class Crawler {
-    private static final String SINGLE = "single";
-    private volatile int activeThread = 0;
+    private static final Object SINGLE = new Object();
+    private volatile AtomicInteger activeThread = new AtomicInteger(0);
 
     /**
      * 爬虫启动方法
@@ -35,7 +36,7 @@ public class Crawler {
      */
     public void initThread(int threadNumber) {
         for (int i = 0; i < threadNumber; i++) {
-            activeThread++;
+            activeThread.incrementAndGet();
             new Thread(() -> {
                 while (true) {
                     try {
@@ -75,7 +76,7 @@ public class Crawler {
                 Thread.sleep(10000);
                 log("当前活动线程数: " + activeThread);
                 System.err.println("当前活动线程数: " + activeThread);
-                if (activeThread == 0) {
+                if (activeThread.intValue() == 0) {
                     if (!Data.isEmpty()) {
                         wake();
                     }
@@ -92,8 +93,8 @@ public class Crawler {
      */
     private void sleep() throws InterruptedException {
         synchronized (SINGLE) {
-            if (activeThread > 0) {
-                activeThread--;
+            if (activeThread.intValue() > 0) {
+                activeThread.decrementAndGet();
                 SINGLE.wait();
             }
         }
@@ -104,8 +105,8 @@ public class Crawler {
      */
     private void wake() {
         synchronized (SINGLE) {
-            while (activeThread < Config.getIntValue(THREAD_NUMBER)) {
-                activeThread++;
+            while (activeThread.intValue() < Config.getIntValue(THREAD_NUMBER)) {
+                activeThread.incrementAndGet();
                 SINGLE.notify();
             }
         }

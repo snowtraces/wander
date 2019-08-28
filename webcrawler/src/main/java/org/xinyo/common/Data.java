@@ -25,8 +25,7 @@ public class Data {
         int start = len - 2;
         String root = split[start];
         while (root.matches("(org|com|net|edu|gov)")) {
-            start = start--;
-            root = split[start];
+            root = split[--start];
         }
 
         String[] newSplit = Arrays.copyOfRange(split, start, len);

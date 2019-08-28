@@ -116,16 +116,19 @@ public class FileUtils {
         int length = split.length;
 
         String basePath = Config.getValue(DATA_BASE_PATH) + File.separator;
-        String filePath = basePath;
         String fileName = "";
 
         // 创建文件夹
+        StringBuilder filePathBuilder = new StringBuilder(basePath);
         for (int i = 0; i < length; i++) {
             if (i != length - 1) {
-                filePath += split[i] + File.separator;
-                File file = new File(filePath);
+                filePathBuilder.append(split[i]).append(File.separator);
+                File file = new File(filePathBuilder.toString());
                 if (!file.exists()) {
-                    file.mkdir();
+                    boolean mkdir = file.mkdir();
+                    if (!mkdir) {
+                        throw new RuntimeException("创建文件夹失败：" + filePathBuilder);
+                    }
                 }
             } else {
                 fileName = split[i];
@@ -141,8 +144,8 @@ public class FileUtils {
                 && !fileName.endsWith(".html")) {
             fileName = fileName + ".htm";
         }
-        filePath += fileName;
-        return new File(filePath);
+        filePathBuilder.append(fileName);
+        return new File(filePathBuilder.toString());
     }
 
     /**
