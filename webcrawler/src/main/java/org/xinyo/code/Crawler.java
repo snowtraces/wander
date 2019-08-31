@@ -34,7 +34,7 @@ public class Crawler {
      *
      * @param threadNumber
      */
-    public void initThread(int threadNumber) {
+    private void initThread(int threadNumber) {
         for (int i = 0; i < threadNumber; i++) {
             activeThread.incrementAndGet();
             new Thread(this::run, "thread-" + i).start();
@@ -45,7 +45,7 @@ public class Crawler {
      * 设计执行方法
      * @throws InterruptedException
      */
-    public void doCrawler() throws InterruptedException {
+    private void doCrawler() throws InterruptedException {
         WebUrl webUrl = Data.getUrl();
         if (webUrl != null) {
             // 页面请求

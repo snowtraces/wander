@@ -15,22 +15,24 @@ public class Data {
     private static volatile List<WebUrl> newBinaryList = new ArrayList<>();
     private static String domain = "";
 
+    private final static String COMMON_DOMAIN_SUFFIX =  "(org|com|net|edu|gov)";
+    private final static Integer THREAD_NUMBER_RATIO = 3;
+
     /**
      * 初始化添加新链接
      */
-    public static synchronized void initUrl(String url) {
-        String domain = url.replaceAll("^.*://([^/]+).*$", "$1");// 域名
+    private static synchronized void initUrl(String url) {
+        String domain = url.replaceAll("^.*://([^/]+).*$", "$1");
         String[] split = domain.split("\\.");
         int len = split.length;
         int start = len - 2;
         String root = split[start];
-        while (root.matches("(org|com|net|edu|gov)")) {
+        while (COMMON_DOMAIN_SUFFIX.matches(root)) {
             root = split[--start];
         }
 
         String[] newSplit = Arrays.copyOfRange(split, start, len);
-        String rootDomain = Joiner.on(".").join(newSplit);
-        Data.domain = rootDomain;
+        Data.domain = String.join(".", newSplit);
 
         addUrlForce(new WebUrl(url, URL_TYPE_TEXT, 0));
     }
@@ -45,7 +47,7 @@ public class Data {
         BloomFilterUtils.initFilter();
         BloomFilterUtils.initLogFilter();
 
-        urls.forEach( url -> initUrl(url));
+        urls.forEach(Data::initUrl);
     }
 
 
@@ -54,7 +56,7 @@ public class Data {
      * @param url
      * @param type
      */
-    public static synchronized boolean addUrl(String url, String type, int depth) {
+    static synchronized boolean addUrl(String url, String type, int depth) {
         // 判断是否跨域
         if(!url.contains(Data.domain)){
             return false;
@@ -106,7 +108,7 @@ public class Data {
                 return newTextList.remove(0);
             } else {
                 int second = LocalDateTime.now().getSecond();
-                if ((second & 3) == 0) {
+                if ((second & THREAD_NUMBER_RATIO) == 0) {
                     return newTextList.remove(0);
                 } else {
                     return newBinaryList.remove(0);
@@ -115,7 +117,7 @@ public class Data {
         }
     }
 
-    public static synchronized void addUrlForce(WebUrl webUrl){
+    private static synchronized void addUrlForce(WebUrl webUrl){
         boolean isLogContain = BloomFilterUtils.checkLog(webUrl.getHash());
         if (!isLogContain) {
             add(webUrl);
@@ -123,10 +125,7 @@ public class Data {
     }
 
     public static boolean isEmpty(){
-        if (newTextList.size() == 0 && newBinaryList.size() == 0) {
-            return true;
-        }
-        return false;
+        return newTextList.size() == 0 && newBinaryList.size() == 0;
     }
 
     private static void add(WebUrl webUrl){

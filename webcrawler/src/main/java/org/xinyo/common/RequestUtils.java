@@ -20,7 +20,7 @@ import java.io.InputStream;
 import static org.xinyo.common.Constant.*;
 
 public class RequestUtils {
-    static CookieStore cookieStore = new BasicCookieStore();
+    private final static CookieStore COOKIE_STORE = new BasicCookieStore();
 
 
     /**
@@ -39,8 +39,7 @@ public class RequestUtils {
             int status = response.getStatusLine().getStatusCode();
             if (status >= 200 && status < 300) {
                 HttpEntity entity = response.getEntity();
-                InputStream is = entity.getContent();
-                return is;
+                return entity.getContent();
             } else {
                 System.err.println("Unexpected response status: " + status);
                 return  null;
@@ -69,13 +68,11 @@ public class RequestUtils {
                 .setConnectionRequestTimeout(30000)
                 .build();
 
-         CloseableHttpClient httpClient = HttpClients.custom()
-                .setDefaultCookieStore(cookieStore)
-                .setDefaultRequestConfig(config)
-                .setUserAgent(USER_AGENT_CHROME)
-                .build();
-
-         return  httpClient;
+        return HttpClients.custom()
+               .setDefaultCookieStore(COOKIE_STORE)
+               .setDefaultRequestConfig(config)
+               .setUserAgent(USER_AGENT_CHROME)
+               .build();
     }
 
 

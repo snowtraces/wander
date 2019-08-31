@@ -111,7 +111,7 @@ public class FileUtils {
      * @param webUrl
      * @return
      */
-    public static File initFile(WebUrl webUrl) {
+    private static File initFile(WebUrl webUrl) {
         String url = webUrl.getUrl();
         url = url.substring(url.indexOf("//") + 2);
         String[] split = url.split("/");
@@ -156,7 +156,7 @@ public class FileUtils {
      * @param webUrl
      * @param html
      */
-    public static void parseHtml(WebUrl webUrl, String html) {
+    private static void parseHtml(WebUrl webUrl, String html) {
         Document doc = Jsoup.parse(html);
 
         // 1. a 标签处理
@@ -194,11 +194,11 @@ public class FileUtils {
      * @param url
      * @return
      */
-    public static String normalizeUrl(WebUrl webUrl, String url) {
+    private static String normalizeUrl(WebUrl webUrl, String url) {
         String pUrl = webUrl.getUrl();
 
-        String protocol = pUrl.startsWith("https") == true ? "https" : "http";// 协议
-        String domain = pUrl.replaceAll("^.*://([^/]+).*$", "$1");// 域名
+        String protocol = pUrl.startsWith("https") ? "https" : "http";
+        String domain = pUrl.replaceAll("^.*://([^/]+).*$", "$1");
 
         // 不以http开头进行补全
         if (!url.startsWith("http")) {
@@ -239,15 +239,7 @@ public class FileUtils {
         return m.find();
     }
 
-    public static void main(String[] args) throws IOException {
-//        WebUrl webUrl = new WebUrl();
-////        webUrl.setType(URL_TYPE_BINARY);
-//        webUrl.setUrl("https://xinyo.org");
-////        InputStream inputStream = request(webUrl);
-////        save(inputStream, webUrl);
-//
-//        String s = normalizeUrl(webUrl, "/archives/");
-//        System.err.println(s);
+    public static void main(String[] args) {
         String fileName = "abccc";
         boolean b = validateFileName(fileName);
         System.out.println(b);

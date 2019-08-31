@@ -6,7 +6,7 @@ import java.util.Properties;
 
 public class Config {
 
-    private static Properties CONFIG_PROPERTIES = new Properties();
+    private final static Properties CONFIG_PROPERTIES = new Properties();
 
 
     public static void initConfig(String configFilePath) {
@@ -19,8 +19,7 @@ public class Config {
 
     public static String getValue(String key) {
         try {
-            String value = CONFIG_PROPERTIES.getProperty(key);
-            return value;
+            return CONFIG_PROPERTIES.getProperty(key);
         } catch (Exception e) {
             return null;
         }
