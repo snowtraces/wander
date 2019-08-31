@@ -27,7 +27,9 @@ public class FileUtils {
      * @param webUrl
      */
     public static void save(WebUrl webUrl, InputStream inputStream) {
-        if (inputStream == null) return;
+        if (inputStream == null) {
+            return;
+        }
 
         // 1. 文件目录初始化
         File file = initFile(webUrl);
@@ -127,7 +129,7 @@ public class FileUtils {
                 if (!file.exists()) {
                     boolean mkdir = file.mkdir();
                     if (!mkdir) {
-                        throw new RuntimeException("创建文件夹失败：" + filePathBuilder);
+                        System.err.println("创建文件夹失败：" + filePathBuilder);
                     }
                 }
             } else {
@@ -231,7 +233,7 @@ public class FileUtils {
     }
 
     private static boolean validateFileName(String fileName) {
-        String regex = "[?*/\\<>:\"|]";
+        String regex = "[?*/<>:\"|]";
         Pattern p = Pattern.compile(regex);
         Matcher m = p.matcher(fileName);
         return m.find();

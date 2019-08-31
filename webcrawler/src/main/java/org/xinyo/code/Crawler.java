@@ -37,15 +37,7 @@ public class Crawler {
     public void initThread(int threadNumber) {
         for (int i = 0; i < threadNumber; i++) {
             activeThread.incrementAndGet();
-            new Thread(() -> {
-                while (true) {
-                    try {
-                        doCrawler();
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }, "thread-" + i).start();
+            new Thread(this::run, "thread-" + i).start();
         }
     }
 
@@ -59,9 +51,10 @@ public class Crawler {
             // 页面请求
             System.out.println("开始请求: " + webUrl);
             InputStream inputStream = request(webUrl);
+            boolean success = inputStream != null;
             save(webUrl, inputStream);
             System.out.println("完成请求: " + webUrl);
-            if (!BloomFilterUtils.checkLog(webUrl.getHash())) {
+            if (!BloomFilterUtils.checkLog(webUrl.getHash()) && success) {
                 log(webUrl);
             }
             wake();
@@ -108,6 +101,16 @@ public class Crawler {
             while (activeThread.intValue() < Config.getIntValue(THREAD_NUMBER)) {
                 activeThread.incrementAndGet();
                 SINGLE.notify();
+            }
+        }
+    }
+
+    private void run() {
+        while (true) {
+            try {
+                doCrawler();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
             }
         }
     }

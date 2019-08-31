@@ -17,7 +17,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
-import static org.xinyo.common.Constant.USER_AGENT_CHROME;
+import static org.xinyo.common.Constant.*;
 
 public class RequestUtils {
     static CookieStore cookieStore = new BasicCookieStore();
@@ -60,7 +60,7 @@ public class RequestUtils {
         }
     }
 
-    public static final CloseableHttpClient getHttpClient() {
+    private static CloseableHttpClient getHttpClient() {
 
          RequestConfig config = RequestConfig.custom()
                 .setCookieSpec(CookieSpecs.DEFAULT)
